@@ -1,7 +1,84 @@
 ##STEP 1: Load the dataset ----
 library(readr)
-loan_data_2015 <- read_csv("data/loan_data_2015.csv")
+loan_data_2015 <- read_csv("data/loan_data_2015.csv", 
+                           col_types = cols(desc = col_skip(), next_pymnt_d = col_skip(), 
+                                            ...54 = col_skip()))
 View(loan_data_2015)
+
+##STEP 3: Data Imputation ----
+###Install the required packages ----
+## dplyr 
+if (!is.element("dplyr", installed.packages()[, 1])) {
+  install.packages("dplyr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("dplyr")
+
+## naniar
+if (!is.element("naniar", installed.packages()[, 1])) {
+  install.packages("naniar", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("naniar")
+
+## ggplot2
+# We require the "ggplot2" package to create more appealing visualizations
+if (!is.element("ggplot2", installed.packages()[, 1])) {
+  install.packages("ggplot2", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("ggplot2")
+
+## MICE
+# We use the MICE package to perform data imputation
+if (!is.element("mice", installed.packages()[, 1])) {
+  install.packages("mice", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("mice")
+
+## Amelia
+if (!is.element("Amelia", installed.packages()[, 1])) {
+  install.packages("Amelia", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+require("Amelia")
+##Select 1000 observations to be included in the dataset ----
+rand_ind <- sample(seq_len(nrow(loan_data_2015)), 1000)
+loan_dataset <- loan_data_2015[rand_ind, ]
+
+##Confirm the missingness of data before data imputation ----
+# Are there missing values in the dataset?
+any_na(loan_dataset)
+
+# How many?
+n_miss(loan_dataset)
+
+# What is the percentage of missing data in the entire dataset?
+prop_miss(loan_dataset)
+
+# How many missing values does each variable have?
+loan_dataset %>% is.na() %>% colSums()
+
+# What is the number and percentage of missing values grouped by
+# each variable?
+miss_var_summary(loan_dataset)
+
+# What is the number and percentage of missing values grouped by
+# each observation?
+miss_case_summary(loan_dataset)
+
+# Which variables contain the most missing values?
+gg_miss_var(loan_dataset)
+
+# Where are missing values located (the shaded regions in the plot)?
+vis_miss(loan_dataset) + theme(axis.text.x = element_text(angle = 80))
+
+# Which combinations of variables are missing together?
+gg_miss_upset(loan_dataset)
+
+
+
 
 
 ##STEP 2: Exploratory Data Analysis ----
