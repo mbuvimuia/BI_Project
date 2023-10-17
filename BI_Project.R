@@ -78,6 +78,20 @@ vis_miss(loan_dataset) + theme(axis.text.x = element_text(angle = 80))
 gg_miss_upset(loan_dataset)
 
 
+#Imputation Process
+loan_daataset_numeric <- loan_dataset %>%
+  select(loan_amnt, funded_amnt, funded_amnt_inv, 
+         int_rate,installment, emp_title,emp_length,annual_inc,
+        dti, delinq_2yrs, inq_last_6mths, mths_since_last_delinq,
+        mths_since_last_record,open_acc, pub_rec, revol_bal, 
+        revol_util, total_acc, out_prncp_inv,total_pymnt, total_pymnt_inv,
+        total_rec_prncp, total_rec_int, total_rec_late_fee, recoveries, collection_recovery_fee
+        , last_pymnt_d, last_pymnt_amnt, last_credit_pull_d, collections_12_mths_ex_med,
+        mths_since_last_major_derog, policy_code, acc_now_delinq, tot_coll_amt,
+        tot_cur_bal, total_rev_hi_lim, )
+
+md.pattern(loan_daataset_numeric)
+
 
 
 
