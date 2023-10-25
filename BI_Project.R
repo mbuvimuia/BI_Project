@@ -43,9 +43,6 @@ if (!is.element("Amelia", installed.packages()[, 1])) {
                    repos = "https://cloud.r-project.org")
 }
 require("Amelia")
-##Select 1000 observations to be included in the dataset ----
-rand_ind <- sample(seq_len(nrow(loan_data_2015)), 1000)
-loan_dataset <- loan_data_2015[rand_ind, ]
 
 ##Confirm the missingness of data before data imputation ----
 # Are there missing values in the dataset?
@@ -77,24 +74,12 @@ vis_miss(loan_dataset) + theme(axis.text.x = element_text(angle = 80))
 # Which combinations of variables are missing together?
 gg_miss_upset(loan_dataset)
 
-
-#Imputation Process 1
-
-somewhat_correlated_variables <- quickpred(loan_dataset, mincor = 0.3)
-
-loan_dataset_mice <- mice(loan_dataset, m = 20, method = "pmm",
-                            seed = 7,
-                            predictorMatrix = somewhat_correlated_variables)
-
-loan_dataset_imputed <- mice::complete(loan_dataset_mice, 1)
+##Remove Missing Data
+loan_dataset_removed_obs <- loan_data_2015 %>% filter(complete.cases(.))
 
 
-
-any_na(loan_dataset_imputed)
-
-n_miss(loan_dataset_imputed)
-
-loan_dataset_imputed %>% is.na() %>% colSums()
+# Are there missing values in the dataset?
+any_na(loan_dataset_removed_obs)
 
 
 ##STEP 2: Exploratory Data Analysis ----
