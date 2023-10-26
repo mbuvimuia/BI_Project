@@ -46,43 +46,59 @@ require("Amelia")
 
 ##Confirm the missingness of data before data imputation ----
 # Are there missing values in the dataset?
-any_na(loan_dataset)
+any_na(loan_data_2015)
 
 # How many?
-n_miss(loan_dataset)
+n_miss(loan_data_2015)
 
 # What is the percentage of missing data in the entire dataset?
-prop_miss(loan_dataset)
+prop_miss(loan_data_2015)
 
 # How many missing values does each variable have?
-loan_dataset %>% is.na() %>% colSums()
+loan_data_2015 %>% is.na() %>% colSums()
 
 # What is the number and percentage of missing values grouped by
 # each variable?
-miss_var_summary(loan_dataset)
+miss_var_summary(loan_data_2015)
 
 # What is the number and percentage of missing values grouped by
 # each observation?
-miss_case_summary(loan_dataset)
+miss_case_summary(loan_data_2015)
 
 # Which variables contain the most missing values?
-gg_miss_var(loan_dataset)
+gg_miss_var(loan_data_2015)
 
-# Where are missing values located (the shaded regions in the plot)?
-vis_miss(loan_dataset) + theme(axis.text.x = element_text(angle = 80))
 
-# Which combinations of variables are missing together?
-gg_miss_upset(loan_dataset)
-
-##Remove Missing Data
+##Remove Missing Data: Option 1
 loan_dataset_removed_obs <- loan_data_2015 %>% filter(complete.cases(.))
 
 
-# Are there missing values in the dataset?
+# Are there missing values in the dataset after removing missing data?
 any_na(loan_dataset_removed_obs)
 
+dim(loan_dataset_removed_obs)
 
-##STEP 2: Exploratory Data Analysis ----
+##Remove Missing Data: Option 2
+loan_dataset_removed_vars <-
+  loan_data_2015 %>% dplyr::select(-mths_since_last_record, -mths_since_last_major_derog, 
+                           -emp_title, -emp_length, -last_pymnt_d, -revol_util, -title, -last_credit_pull_d)
+
+dim(loan_dataset_removed_vars)
+
+
+any_na(loan_dataset_removed_vars)
+
+miss_var_summary(loan_dataset_removed_vars)
+
+#Remove the observations
+loan_removed_vars_obs <- loan_dataset_removed_vars %>% filter(complete.cases(.))
+
+dim(loan_removed_vars_obs)
+
+any_na(loan_removed_vars_obs)
+
+miss_var_summary(loan_removed_vars_obs)
+##STEP 3: Exploratory Data Analysis ----
 ###Install the required packages ----
 if (!is.element("renv", installed.packages()[, 1])) {
   install.packages("renv", dependencies = TRUE)
@@ -95,27 +111,23 @@ if (!is.element("languageserver", installed.packages()[, 1])) {
 require("languageserver")
 
 ###Previewing the dataset and Identify the datatypes ----
-dim(loan_data_2015)
-sapply(loan_data_2015, class)
+dim(loan_removed_vars_obs)
+sapply(loan_removed_vars_obs, class)
 
 #DESCRIPTIVE STATISTICS ----
 ###Identify the number of instances that belong to each class----
 #Count Categorical data
-loan_data_2015_purpose_freq <- loan_data_2015$purpose
-cbind(frequency = table(loan_data_2015_purpose_freq),
-      percentage = prop.table(table(loan_data_2015_purpose_freq)) * 100)
+loan_removed_vars_obs_purpose_freq <- loan_removed_vars_obs$purpose
+cbind(frequency = table(loan_removed_vars_obs_purpose_freq),
+      percentage = prop.table(table(loan_removed_vars_obs_purpose_freq)) * 100)
 
-loan_data_2015_title_freq <- loan_data_2015$title
-cbind(frequency = table(loan_data_2015_title_freq),
-      percentage = prop.table(table(loan_data_2015_title_freq)) * 100)
+loan_removed_vars_obs_loanstatus_freq <- loan_removed_vars_obs$loan_status
+cbind(frequency = table(loan_removed_vars_obs_loanstatus_freq),
+      percentage = prop.table(table(loan_removed_vars_obs_loanstatus_freq)) * 100)
 
-loan_data_2015_loanstatus_freq <- loan_data_2015$loan_status
-cbind(frequency = table(loan_data_2015_loanstatus_freq),
-      percentage = prop.table(table(loan_data_2015_loanstatus_freq)) * 100)
-
-loan_data_2015_verificationstatus_freq <- loan_data_2015$verification_status
-cbind(frequency = table(loan_data_2015_verificationstatus_freq),
-      percentage = prop.table(table(loan_data_2015_verificationstatus_freq)) * 100)
+loan_removed_vars_obs_verificationstatus_freq <- loan_removed_vars_obs$verification_status
+cbind(frequency = table(loan_removed_vars_obs_verificationstatus_freq),
+      percentage = prop.table(table(loan_removed_vars_obs_verificationstatus_freq)) * 100)
 
 
 
@@ -123,34 +135,30 @@ cbind(frequency = table(loan_data_2015_verificationstatus_freq),
 
 #MEASURE OF CENTRAL TENDENCY ----
 ##Calculate the mode----
-loan_data_2015_purpose_mode <- names(table(loan_data_2015$purpose))[
-  which(table(loan_data_2015$purpose) == max(table(loan_data_2015$purpose)))
+loan_removed_vars_obs_purpose_mode <- names(table(loan_removed_vars_obs$purpose))[
+  which(table(loan_removed_vars_obs$purpose) == max(table(loan_removed_vars_obs$purpose)))
 ]
-print(loan_data_2015_purpose_mode)
+print(loan_removed_vars_obs_purpose_mode)
 
-loan_data_2015_title_mode <- names(table(loan_data_2015$title))[
-  which(table(loan_data_2015$title) == max(table(loan_data_2015$title)))
-]
-print(loan_data_2015_title_mode)
 
-loan_data_2015_loanstatus_mode <- names(table(loan_data_2015$loan_status))[
-  which(table(loan_data_2015$loan_status) == max(table(loan_data_2015$loan_status)))
+loan_removed_vars_obs_loanstatus_mode <- names(table(loan_removed_vars_obs$loan_status))[
+  which(table(loan_removed_vars_obs$loan_status) == max(table(loan_removed_vars_obs$loan_status)))
 ]
-print(loan_data_2015_loanstatus_mode)
+print(loan_removed_vars_obs_loanstatus_mode)
 
 
 
 # MEASURES OF Distribution/Dispersion/Spread/Scatter/Variability ----
 ##Measure of distribution for each variable----
-summary(loan_data_2015)
+summary(loan_removed_vars_obs)
 
 ##Measure the standard deviation for each variable----
 
-sapply(loan_data_2015[, 1:74], sd)
+sapply(loan_removed_vars_obs[, 1:47], sd)
 
 ## Measure the variance for each variable----
 
-sapply(loan_data_2015[, 1:74], var)
+sapply(loan_removed_vars_obs[, 1:47], var)
 
 ## Measure the kurtosis for each variable----
 if (!is.element("e1071", installed.packages()[, 1])) {
@@ -158,16 +166,16 @@ if (!is.element("e1071", installed.packages()[, 1])) {
 }
 require("e1071")
 
-sapply(loan_data_2015[, -6, -9, -10, -11, -13, -15, -16, 
-                      -17, -18, -19, -20, -21, -22, -23, -24, -27, -36, -46, -48, -49, -53, ], kurtosis, type = 2)
+sapply(loan_removed_vars_obs[, c(-1,-2,-6,-9,-10,-11,-13,-14,-15,-16,-17,-18,-19,-20
+                                -23, -30, -43)], kurtosis, type = 2)
 ##Measure the skewness for each variable----
 
-sapply(loan_data_2015[, -6, -9, -10, -11, -13, -15, -16, 
+sapply(loan_removed_vars_obs[, -6, -9, -10, -11, -13, -15, -16, 
                       -17, -18, -19, -20, -21, -22, -23, -24, -27, -36, -46, -48, -49, -53, ], skewness, type = 2)
 
 # MEASURES THE COVARIANCE BETWEEN VARIABLES----
 ##Measures of relationship----
-loan_data_2015_cov <- cov(loan_data_2015[, -6, -9, -10, -11, -13, -15, -16, 
+loan_removed_vars_obs_cov <- cov(loan_removed_vars_obs[, -6, -9, -10, -11, -13, -15, -16, 
                                          -17, -18, -19, -20, -21, -22, -23, -24, -27, -36, -46, -48, -49, -53, ])
-View(loan_data_2015_cov)
+View(loan_removed_vars_obs_cov)
 
