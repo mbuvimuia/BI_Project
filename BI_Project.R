@@ -1,13 +1,6 @@
-##STEP 1: Load the dataset ----
-library(readr)
-loan_data_2015 <- read_csv("data/loan_data_2015.csv", 
-                           col_types = cols(desc = col_skip(), next_pymnt_d = col_skip(), 
-                                            ...54 = col_skip()))
-View(loan_data_2015)
-
-##STEP 3: Data Imputation ----
-###Install the required packages ----
-## dplyr 
+##STEP 1: Required Packages ----
+##Install the required packages ----
+### dplyr 
 if (!is.element("dplyr", installed.packages()[, 1])) {
   install.packages("dplyr", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
@@ -44,6 +37,92 @@ if (!is.element("Amelia", installed.packages()[, 1])) {
 }
 require("Amelia")
 
+if (require("stats")) {
+  require("stats")
+} else {
+  install.packages("stats", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## mlbench 
+if (require("mlbench")) {
+  require("mlbench")
+} else {
+  install.packages("mlbench", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## caret 
+if (require("caret")) {
+  require("caret")
+} else {
+  install.packages("caret", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## MASS 
+if (require("MASS")) {
+  require("MASS")
+} else {
+  install.packages("MASS", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## glmnet 
+if (require("glmnet")) {
+  require("glmnet")
+} else {
+  install.packages("glmnet", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## e1071 
+if (require("e1071")) {
+  require("e1071")
+} else {
+  install.packages("e1071", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## kernlab 
+if (require("kernlab")) {
+  require("kernlab")
+} else {
+  install.packages("kernlab", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## rpart 
+if (require("rpart")) {
+  require("rpart")
+} else {
+  install.packages("rpart", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+## factoextra ----
+if (require("factoextra")) {
+  require("factoextra")
+} else {
+  install.packages("factoextra", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## FactoMineR ----
+if (require("FactoMineR")) {
+  require("FactoMineR")
+} else {
+  install.packages("FactoMineR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+##STEP 2: Load the dataset ----
+library(readr)
+loan_data_2015 <- read_csv("data/loan_data_2015.csv", 
+                           col_types = cols(desc = col_skip(), next_pymnt_d = col_skip(), 
+                                            ...54 = col_skip()))
+View(loan_data_2015)
+
+##STEP 3: Data Imputation ----
 ##Confirm the missingness of data before data imputation ----
 # Are there missing values in the dataset?
 any_na(loan_data_2015)
@@ -69,14 +148,13 @@ miss_case_summary(loan_data_2015)
 gg_miss_var(loan_data_2015)
 
 
-##Remove Missing Data: Option 1
-loan_dataset_removed_obs <- loan_data_2015 %>% filter(complete.cases(.))
-
-
-# Are there missing values in the dataset after removing missing data?
-any_na(loan_dataset_removed_obs)
-
-dim(loan_dataset_removed_obs)
+# ##Remove Missing Data: Option 1
+# loan_dataset_removed_obs <- loan_data_2015 %>% filter(complete.cases(.))
+# 
+# 
+# # Are there missing values in the dataset after removing missing data?
+# any_na(loan_dataset_removed_obs)
+# dim(loan_dataset_removed_obs)
 
 ##Remove Missing Data: Option 2
 loan_dataset_removed_vars <-
@@ -98,7 +176,9 @@ dim(loan_removed_vars_obs)
 any_na(loan_removed_vars_obs)
 
 miss_var_summary(loan_removed_vars_obs)
-##STEP 3: Exploratory Data Analysis ----
+
+
+##STEP 4: Basic Exploratory Data Analysis ----
 ###Install the required packages ----
 if (!is.element("renv", installed.packages()[, 1])) {
   install.packages("renv", dependencies = TRUE)
@@ -109,6 +189,11 @@ if (!is.element("languageserver", installed.packages()[, 1])) {
   install.packages("languageserver", dependencies = TRUE)
 }
 require("languageserver")
+
+if (!is.element("e1071", installed.packages()[, 1])) {
+  install.packages("e1071", dependencies = TRUE)
+}
+require("e1071")
 
 ###Previewing the dataset and Identify the datatypes ----
 dim(loan_removed_vars_obs)
@@ -128,9 +213,6 @@ cbind(frequency = table(loan_removed_vars_obs_loanstatus_freq),
 loan_removed_vars_obs_verificationstatus_freq <- loan_removed_vars_obs$verification_status
 cbind(frequency = table(loan_removed_vars_obs_verificationstatus_freq),
       percentage = prop.table(table(loan_removed_vars_obs_verificationstatus_freq)) * 100)
-
-
-
 
 
 #MEASURE OF CENTRAL TENDENCY ----
@@ -160,22 +242,60 @@ sapply(loan_removed_vars_obs[, 1:47], sd)
 
 sapply(loan_removed_vars_obs[, 1:47], var)
 
-## Measure the kurtosis for each variable----
-if (!is.element("e1071", installed.packages()[, 1])) {
-  install.packages("e1071", dependencies = TRUE)
-}
-require("e1071")
+## Measure the kurtosis of each variable----
+sapply(loan_removed_vars_obs [, c( -1,-2,-6,-9,-10,-11,
+                                   -13,-14,-15,-16,-17,-18,-19,-20,
+                                   -23, -30, -43)], kurtosis, type = 2)
 
-sapply(loan_removed_vars_obs[, c(-1,-2,-6,-9,-10,-11,-13,-14,-15,-16,-17,-18,-19,-20
-                                -23, -30, -43)], kurtosis, type = 2)
-##Measure the skewness for each variable----
+##Measure the skewness of each variable----
+sapply(loan_removed_vars_obs [, c( -1,-2,-6,-9,-10,-11,
+                                   -13,-14,-15,-16,-17,-18,-19,-20,
+                                   -23, -30, -43)], skewness, type = 2)
 
-sapply(loan_removed_vars_obs[, -6, -9, -10, -11, -13, -15, -16, 
-                      -17, -18, -19, -20, -21, -22, -23, -24, -27, -36, -46, -48, -49, -53, ], skewness, type = 2)
+## Measure the covariance between variables ----
 
-# MEASURES THE COVARIANCE BETWEEN VARIABLES----
-##Measures of relationship----
-loan_removed_vars_obs_cov <- cov(loan_removed_vars_obs[, -6, -9, -10, -11, -13, -15, -16, 
-                                         -17, -18, -19, -20, -21, -22, -23, -24, -27, -36, -46, -48, -49, -53, ])
-View(loan_removed_vars_obs_cov)
+loan_data_cov <- cov(loan_removed_vars_obs[, c( -1,-2,-6,-9,-10,-11,
+                                             -13,-14,-15,-16,-17,-18,-19,-20,
+                                             -23, -30, -43)])
+View(loan_data_cov)
 
+## Measure the correlation between variables ----
+loan_data_cor <- cor(loan_removed_vars_obs[c( -1,-2,-6,-9,-10,-11,
+                                              -13,-14,-15,-16,-17,-18,-19,-20,
+                                              -23, -30, -43)])
+View(loan_data_cor)
+
+## Create histograms for each numeric attribute
+# hist(loan_removed_vars_obs[, 8], main = names(loan_removed_vars_obs)[8])
+# hist(loan_removed_vars_obs[, 12], main = names(loan_removed_vars_obs)[12])
+# hist(loan_removed_vars_obs[, 21], main = names(loan_removed_vars_obs)[21])
+# hist(loan_removed_vars_obs[, 22], main = names(loan_removed_vars_obs)[22])
+# hist(loan_removed_vars_obs[, 24], main = names(loan_removed_vars_obs)[24])
+# hist(loan_removed_vars_obs[, 25], main = names(loan_removed_vars_obs)[25])
+# hist(loan_removed_vars_obs[, 26], main = names(loan_removed_vars_obs)[26])
+# hist(loan_removed_vars_obs[, 27], main = names(loan_removed_vars_obs)[27])
+# hist(loan_removed_vars_obs[, 28], main = names(loan_removed_vars_obs)[28])
+# hist(loan_removed_vars_obs[, 29], main = names(loan_removed_vars_obs)[29])
+# hist(loan_removed_vars_obs[, 31], main = names(loan_removed_vars_obs)[31])
+# hist(loan_removed_vars_obs[, 32], main = names(loan_removed_vars_obs)[32])
+# hist(loan_removed_vars_obs[, 33], main = names(loan_removed_vars_obs)[33])
+# hist(loan_removed_vars_obs[, 34], main = names(loan_removed_vars_obs)[34])
+# hist(loan_removed_vars_obs[, 35], main = names(loan_removed_vars_obs)[35])
+# hist(loan_removed_vars_obs[, 36], main = names(loan_removed_vars_obs)[36])
+# hist(loan_removed_vars_obs[, 37], main = names(loan_removed_vars_obs)[37])
+# hist(loan_removed_vars_obs[, 38], main = names(loan_removed_vars_obs)[38])
+# hist(loan_removed_vars_obs[, 39], main = names(loan_removed_vars_obs)[39])
+# hist(loan_removed_vars_obs[, 40], main = names(loan_removed_vars_obs)[40])
+# hist(loan_removed_vars_obs[, 41], main = names(loan_removed_vars_obs)[41])
+# hist(loan_removed_vars_obs[, 42], main = names(loan_removed_vars_obs)[42])
+# hist(loan_removed_vars_obs[, 44], main = names(loan_removed_vars_obs)[44])
+# hist(loan_removed_vars_obs[, 45], main = names(loan_removed_vars_obs)[45])
+# hist(loan_removed_vars_obs[, 46], main = names(loan_removed_vars_obs)[46])
+# hist(loan_removed_vars_obs[, 47], main = names(loan_removed_vars_obs)[47])
+
+
+#STEP 5: Data Transformation ----
+library(dplyr)
+
+numerical_col <- loan_removed_vars_obs %>% 
+  select_if(is.numeric)
