@@ -123,7 +123,7 @@ loan_data_2015 <- read_csv("data/loan_data_2015.csv",
 View(loan_data_2015)
 
 ##STEP 3: Data Imputation ----
-##Confirm the missingness of data before data imputation ----
+###Confirm the missingness of data before data imputation ----
 # Are there missing values in the dataset?
 any_na(loan_data_2015)
 
@@ -204,7 +204,7 @@ sapply(loan_data, class)
 
 #DESCRIPTIVE STATISTICS ----
 ###Identify the number of instances that belong to each class----
-#Count Categorical data
+###Count Categorical data
 loan_data_purpose_freq <- loan_data$purpose
 cbind(frequency = table(loan_data_purpose_freq),
       percentage = prop.table(table(loan_data_purpose_freq)) * 100)
@@ -217,9 +217,21 @@ loan_data_verificationstatus_freq <- loan_data$verification_status
 cbind(frequency = table(loan_data_verificationstatus_freq),
       percentage = prop.table(table(loan_data_verificationstatus_freq)) * 100)
 
+loan_data_term_freq <- loan_data$term
+cbind(frequency = table(loan_data_term_freq),
+      percentage  = prop.table(table(loan_data_term_freq))* 100)
+
+loan_data_grade <- loan_data$grade
+cbind(frequency = table(loan_data_grade),
+      percentage = prop.table(table(loan_data_grade)) * 100 )
+
+loan_data_home <- loan_data$home_ownership
+cbind(frequency = table(loan_data_home),
+      percentage = prop.table(table(loan_data_home)) * 100)
+
 
 #MEASURE OF CENTRAL TENDENCY ----
-##Calculate the mode----
+###Calculate the mode----
 loan_data_purpose_mode <- names(table(loan_data$purpose))[
   which(table(loan_data$purpose) == max(table(loan_data$purpose)))
 ]
@@ -231,59 +243,79 @@ loan_data_loanstatus_mode <- names(table(loan_data$loan_status))[
 ]
 print(loan_data_loanstatus_mode)
 
+loan_data_grade_mode <- names(table(loan_data$grade))[
+  which(table(loan_data$grade) == max(table(loan_data$grade)))
+]
+print(loan_data_grade_mode)
+
+loan_data_home_mode <- names(table(loan_data$home_ownership))[
+  which(table(loan_data$home_ownership) == max(table(loan_data$home_ownership)))
+]
+print(loan_data_home_mode)
+
+loan_data_term_mode <- names(table(loan_data$term))[
+  which(table(loan_data$term) == max(table(loan_data$term)))
+]
+print(loan_data_term_mode)
+
+
 
 
 # MEASURES OF Distribution/Dispersion/Spread/Scatter/Variability ----
-##Measure of distribution for each variable----
+###Measure of distribution for each variable----
 summary(loan_data)
 
-##Measure the standard deviation for each variable----
+###Measure the standard deviation for each variable----
 
-sapply(loan_data[, 1:47], sd)
+sapply(loan_data[, 1:39], sd)
 
-## Measure the variance for each variable----
+###Measure the variance for each variable----
 
-sapply(loan_data[, 1:47], var)
+sapply(loan_data[, 1:39], var)
 
-## Measure the kurtosis of each variable----
-sapply(loan_data [, c( -1,-2,-6,-9,-10,-11,
-                                   -13,-14,-15,-16,-17,-18,-19,-20,
-                                   -23, -30, -43)], kurtosis, type = 2)
+###Measure the kurtosis of each variable----
+sapply(loan_data [, c( -1, -2, -6, -9, -10, -12, -13, -14, -23, -35)], kurtosis, type = 2)
 
-##Measure the skewness of each variable----
-sapply(loan_data [, c( -1,-2,-6,-9,-10,-11,
-                                   -13,-14,-15,-16,-17,-18,-19,-20,
-                                   -23, -30, -43)], skewness, type = 2)
+###Measure the skewness of each variable----
+sapply(loan_data [, c( -1, -2, -6, -9, -10, -12, -13, -14, -23, -35)], skewness, type = 2)
 
-## Measure the covariance between variables ----
+###Measure the covariance between variables ----
 
-loan_data_cov <- cov(loan_data[, c( -1,-2,-6,-9,-10,-11,
-                                             -13,-14,-15,-16,-17,-18,-19,-20,
-                                             -23, -30, -43)])
+loan_data_cov <- cov(loan_data[, c(-1, -2, -6, -9, -10, -12, -13, -14, -23, -35)])
 View(loan_data_cov)
 
-## Measure the correlation between variables ----
-loan_data_cor <- cor(loan_data[c( -1,-2,-6,-9,-10,-11,
-                                              -13,-14,-15,-16,-17,-18,-19,-20,
-                                              -23, -30, -43)])
+###Measure the correlation between variables ----
+loan_data_cor <- cor(loan_data[c(-1, -2, -6, -9, -10, -12, -13, -14, -23, -35)])
 View(loan_data_cor)
 
-## Create histograms for each numeric attribute
+
+#BASIC VISUALIZATION----
+##Univariate plots ----
+### Create histograms for numeric attribute----
 pub_rec <- as.numeric(unlist(loan_data[, 20]))
 open_acc <- as.numeric(unlist(loan_data[, 19]))
 month_since_last_deliq <- as.numeric(unlist(loan_data[, 18]))
 collections <- as.numeric(unlist(loan_data[,34]))
 delinq_2yrs <- as.numeric(unlist(loan_data[,16]))
-total_payment <- as.numeric(unlist(loan_data[,26]))
+total_rec_late_fee <- as.numeric(unlist(loan_data[, 30]))
 
 par(mfrow = c(1, 1))
 
 hist(pub_rec, main = names(loan_data)[20], xlim = c(0,100), ylim = c(0,30))
 hist(open_acc, main = names(loan_data)[19], xlim = c(0,100), ylim = c(0,30))
-hist(month_since_last_deliq, main = names(loan_data)[18], xlim = c(0,100), ylim = c(0,30))
-hist(collections, main = names(loan_data)[34], xlim = c(0,20), ylim = c(0,50))
+hist(month_since_last_deliq, main = names(loan_data)[18], xlim = c(0,200), ylim = c(0,500))
+hist(collections, main = names(loan_data)[34], xlim = c(0,15), ylim = c(0,100))
 hist(delinq_2yrs, main = names(loan_data)[16], xlim = c(0,40), ylim = c(0,20))
-hist(total_payment, main = names(loan_data)[26], xlim = c(0,44000), ylim = c(0,20))
+hist(total_rec_late_fee, main = names(loan_data)[30], xlim = c(0,170), ylim = c(0,50))
+
+### Create Bar plot for Categorical data ----
+barplot(table(loan_data[, 10]), main = names(loan_data)[10])
+barplot(table(loan_data[, 9]), main = names(loan_data)[9])
+barplot(table(loan_data[, 6]), main = names(loan_data)[6])
+barplot(table(loan_data[, 12]), main = names(loan_data)[12])
+barplot(table(loan_data[, 10]), main = names(loan_data)[10])
+barplot(table(loan_data[, 13]), main = names(loan_data)[13])
+barplot(table(loan_data[, 14]), main = names(loan_data)[14])
 
 
 #STEP 5: Data Transformation ----
