@@ -115,6 +115,30 @@ if (require("FactoMineR")) {
                    repos = "https://cloud.r-project.org")
 }
 
+## klaR ----
+if (require("klaR")) {
+  require("klaR")
+} else {
+  install.packages("klaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## LiblineaR ----
+if (require("LiblineaR")) {
+  require("LiblineaR")
+} else {
+  install.packages("LiblineaR", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## naivebayes ----
+if (require("naivebayes")) {
+  require("naivebayes")
+} else {
+  install.packages("naivebayes", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
 ##STEP 2: Load the dataset ----
 library(readr)
 loan_data_2015 <- read_csv("data/loan_data_2015.csv", 
@@ -147,14 +171,13 @@ miss_case_summary(loan_data_2015)
 # Which variables contain the most missing values?
 gg_miss_var(loan_data_2015)
 
+##Visualization of Missing Data----
+if (!is.element("Amelia", installed.packages()[, 1])) {
+  install.packages("Amelia", dependencies = TRUE)
+}
+require("Amelia")
 
-# ##Remove Missing Data: Option 1
-# loan_dataset_removed_obs <- loan_data_2015 %>% filter(complete.cases(.))
-# 
-# 
-# # Are there missing values in the dataset after removing missing data?
-# any_na(loan_dataset_removed_obs)
-# dim(loan_dataset_removed_obs)
+missmap(loan_data_2015, col = c("red", "grey"), legend = TRUE)
 
 ##Remove Missing Data: Option 2
 loan_dataset_removed_vars <-
@@ -319,7 +342,93 @@ barplot(table(loan_data[, 14]), main = names(loan_data)[14])
 
 
 #STEP 5: Data Transformation ----
-library(dplyr)
+###Scale Data Transform----
+#BEFORE
+summary(loan_data)
 
-numerical_col <- loan_data %>% 
-  select_if(is.numeric)
+model_of_the_transform <- preProcess(loan_data, method = c("scale"))
+print(model_of_the_transform)
+loan_data_scale_transform <- predict(model_of_the_transform,
+                                     loan_data)
+#AFTER
+summary(loan_data_scale_transform)
+
+###Center Data Transform----
+#BEFORE
+summary(loan_data)
+
+model_of_the_transform <- preProcess(loan_data, method = c("center"))
+print(model_of_the_transform)
+loan_data_center_transform <- predict(model_of_the_transform,
+                                     loan_data)
+#AFTER
+summary(loan_data_center_transform)
+
+###Standardize Data Transform----
+#BEFORE
+summary(loan_data)
+
+sapply(loan_data[, -1, -2, -6, -9, -10, -12, -13, -14, -23, -35 ], sd)
+model_of_the_transform <- preProcess(loan_data, method = c("scale", "center"))
+print(model_of_the_transform)
+loan_data_standardize_transform <- predict(model_of_the_transform,
+                                     loan_data)
+
+#AFTER
+summary(loan_data_standardize_transform)
+sapply(loan_data_standardize_transform[, -1, -2, -6, -9, -10, -12, -13, -14, -23, -35 ], sd)
+
+
+#STEP 6: Training the Model ----
+##LDA with k-fold Cross Validation----
+###1. Splitting the dataset ----
+# Define a 75:25 train:test data split of the dataset.
+# That is, 75% of the original data will be used to train the model and
+# 25% of the original data will be used to test the model.
+train_index <- createDataPartition(loan_data_center_transform$loan_status,
+                                   p = 0.75,
+                                   list = FALSE)
+loan_data_train <- loan_data[train_index, ]
+loan_data_test <- loan_data[-train_index, ]
+
+### 2. Classification: LDA with k-fold Cross Validation ----
+train_control <- trainControl(method = "cv", number = 5)
+loan_data_model_lda <- 
+  caret::train(`loan_status` ~ loan_amnt + term + int_rate + grade + home_ownership + annual_inc + 
+                 verification_status + dti + open_acc + revol_bal +
+                 total_acc + initial_list_status + total_pymnt + total_rec_int + 
+                 tot_cur_bal, data = loan_data_train,
+               trControl = train_control, na.action = na.omit, method = "lda2",
+               metric = "Accuracy")
+
+### 3.b. Test the trained LDA model using the testing dataset ----
+predictions_lda <- predict(loan_data_model_lda,
+                           loan_data_test[, 1:39])
+
+### 3.c. View the summary of the model----
+print(loan_data_model_lda)
+
+##Naive Bayes with Repeated k-fold Cross Validation ----
+###1. Splitting the dataset ----
+# Define a 75:25 train:test data split of the dataset.
+# That is, 75% of the original data will be used to train the model and
+# 25% of the original data will be used to test the model.
+train_index <- createDataPartition(loan_data_center_transform$loan_status,
+                                   p = 0.75,
+                                   list = FALSE)
+loan_data_train <- loan_data[train_index, ]
+loan_data_test <- loan_data[-train_index, ]
+
+### 2. Classification: Naive Bayes with Repeated k-fold Cross Validation ----
+loan_data_model_nb <-
+  e1071::naiveBayes(`loan_status` ~ loan_amnt + term + int_rate + grade + home_ownership + annual_inc +
+                      verification_status + dti + open_acc + revol_bal +
+                      total_acc + initial_list_status + total_pymnt + total_rec_int +
+                      tot_cur_bal, data = loan_data_train)
+
+### 3. Test the trained naive Bayes classifier using the testing dataset ----
+predictions_nb_e1071 <-
+  predict(loan_data_model_nb, loan_data_test[, 1:39])
+### 4.View a summary of the naive Bayes model----
+print(loan_data_model_nb)
+
