@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 data/loan_data_2015.csv
+*.rds

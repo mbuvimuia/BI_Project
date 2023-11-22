@@ -1,20 +1,20 @@
 ##STEP 1: Required Packages ----
 ##Install the required packages ----
-### dplyr 
+##dplyr -----
 if (!is.element("dplyr", installed.packages()[, 1])) {
   install.packages("dplyr", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
 }
 require("dplyr")
 
-## naniar
+## naniar ----
 if (!is.element("naniar", installed.packages()[, 1])) {
   install.packages("naniar", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
 }
 require("naniar")
 
-## ggplot2
+## ggplot2 ----
 # We require the "ggplot2" package to create more appealing visualizations
 if (!is.element("ggplot2", installed.packages()[, 1])) {
   install.packages("ggplot2", dependencies = TRUE,
@@ -22,7 +22,7 @@ if (!is.element("ggplot2", installed.packages()[, 1])) {
 }
 require("ggplot2")
 
-## MICE
+## MICE ----
 # We use the MICE package to perform data imputation
 if (!is.element("mice", installed.packages()[, 1])) {
   install.packages("mice", dependencies = TRUE,
@@ -30,7 +30,7 @@ if (!is.element("mice", installed.packages()[, 1])) {
 }
 require("mice")
 
-## Amelia
+## Amelia ----
 if (!is.element("Amelia", installed.packages()[, 1])) {
   install.packages("Amelia", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
@@ -44,7 +44,7 @@ if (require("stats")) {
                    repos = "https://cloud.r-project.org")
 }
 
-## mlbench 
+## mlbench ----
 if (require("mlbench")) {
   require("mlbench")
 } else {
@@ -52,7 +52,7 @@ if (require("mlbench")) {
                    repos = "https://cloud.r-project.org")
 }
 
-## caret 
+## caret ----
 if (require("caret")) {
   require("caret")
 } else {
@@ -60,7 +60,7 @@ if (require("caret")) {
                    repos = "https://cloud.r-project.org")
 }
 
-## MASS 
+## MASS ----
 if (require("MASS")) {
   require("MASS")
 } else {
@@ -68,7 +68,7 @@ if (require("MASS")) {
                    repos = "https://cloud.r-project.org")
 }
 
-## glmnet 
+## glmnet ----
 if (require("glmnet")) {
   require("glmnet")
 } else {
@@ -76,7 +76,7 @@ if (require("glmnet")) {
                    repos = "https://cloud.r-project.org")
 }
 
-## e1071 
+## e1071 ----
 if (require("e1071")) {
   require("e1071")
 } else {
@@ -84,7 +84,7 @@ if (require("e1071")) {
                    repos = "https://cloud.r-project.org")
 }
 
-## kernlab 
+## kernlab ----
 if (require("kernlab")) {
   require("kernlab")
 } else {
@@ -92,7 +92,7 @@ if (require("kernlab")) {
                    repos = "https://cloud.r-project.org")
 }
 
-## rpart 
+## rpart----
 if (require("rpart")) {
   require("rpart")
 } else {
@@ -139,6 +139,79 @@ if (require("naivebayes")) {
                    repos = "https://cloud.r-project.org")
 }
 
+## pROC ----
+if (require("pROC")) {
+  require("pROC")
+} else {
+  install.packages("pROC", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+## randomForest ----
+if (require("randomForest")) {
+  require("randomForest")
+} else {
+  install.packages("randomForest", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## caretEnsemble ---- for stacking
+if (require("caretEnsemble")) {
+  require("caretEnsemble")
+} else {
+  install.packages("caretEnsemble", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## C50 ---- for boosting
+if (require("C50")) {
+  require("C50")
+} else {
+  install.packages("C50", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## adabag ----
+if (require("adabag")) {
+  require("adabag")
+} else {
+  install.packages("adabag", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## RRF ----
+if (require("RRF")) {
+  require("RRF")
+} else {
+  install.packages("RRF", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## plumber ----
+if (require("plumber")) {
+  require("plumber")
+} else {
+  install.packages("plumber", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+##httr ----
+
+if (require("httr")) {
+  require("httr")
+} else {
+  install.packages("httr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## jsonlite ----
+if (require("jsonlite")) {
+  require("jsonlite")
+} else {
+  install.packages("jsonlite", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+
 ##STEP 2: Load the dataset ----
 library(readr)
 loan_data_2015 <- read_csv("data/loan_data_2015.csv", 
@@ -171,13 +244,13 @@ miss_case_summary(loan_data_2015)
 # Which variables contain the most missing values?
 gg_miss_var(loan_data_2015)
 
-##Visualization of Missing Data----
-if (!is.element("Amelia", installed.packages()[, 1])) {
-  install.packages("Amelia", dependencies = TRUE)
-}
-require("Amelia")
-
-missmap(loan_data_2015, col = c("red", "grey"), legend = TRUE)
+# ##Visualization of Missing Data----
+# if (!is.element("Amelia", installed.packages()[, 1])) {
+#   install.packages("Amelia", dependencies = TRUE)
+# }
+# require("Amelia")
+# 
+# missmap(loan_data_2015, col = c("red", "grey"), legend = TRUE)
 
 ##Remove Missing Data: Option 2
 loan_dataset_removed_vars <-
@@ -380,8 +453,9 @@ sapply(loan_data_standardize_transform[, -1, -2, -6, -9, -10, -12, -13, -14, -23
 
 
 #STEP 6: Training the Model ----
+##ALGORITHM SELECTION ----
 ##LDA with k-fold Cross Validation----
-###1. Splitting the dataset ----
+###1.Splitting the dataset ----
 # Define a 75:25 train:test data split of the dataset.
 # That is, 75% of the original data will be used to train the model and
 # 25% of the original data will be used to test the model.
@@ -391,44 +465,194 @@ train_index <- createDataPartition(loan_data_center_transform$loan_status,
 loan_data_train <- loan_data[train_index, ]
 loan_data_test <- loan_data[-train_index, ]
 
-### 2. Classification: LDA with k-fold Cross Validation ----
+### 2.Classification: LDA with k-fold Cross Validation ----
+
+set.seed(7)
+
 train_control <- trainControl(method = "cv", number = 5)
-loan_data_model_lda <- 
-  caret::train(`loan_status` ~ loan_amnt + term + int_rate + grade + home_ownership + annual_inc + 
+loan_model_lda <- 
+  caret::train(`loan_status` ~ loan_amnt + int_rate + grade + home_ownership + annual_inc + 
                  verification_status + dti + open_acc + revol_bal +
-                 total_acc + initial_list_status + total_pymnt + total_rec_int + 
+                 total_acc  + total_pymnt + total_rec_int + 
                  tot_cur_bal, data = loan_data_train,
                trControl = train_control, na.action = na.omit, method = "lda2",
                metric = "Accuracy")
 
-### 3.b. Test the trained LDA model using the testing dataset ----
-predictions_lda <- predict(loan_data_model_lda,
+### 3.a.Test the trained LDA model using the testing dataset ----
+predictions_lda <- predict(loan_model_lda,
                            loan_data_test[, 1:39])
 
-### 3.c. View the summary of the model----
-print(loan_data_model_lda)
+### 3.b.Display the model's details ----
+print(loan_model_lda)
 
-##Naive Bayes with Repeated k-fold Cross Validation ----
-###1. Splitting the dataset ----
-# Define a 75:25 train:test data split of the dataset.
-# That is, 75% of the original data will be used to train the model and
-# 25% of the original data will be used to test the model.
-train_index <- createDataPartition(loan_data_center_transform$loan_status,
-                                   p = 0.75,
-                                   list = FALSE)
-loan_data_train <- loan_data[train_index, ]
-loan_data_test <- loan_data[-train_index, ]
 
-### 2. Classification: Naive Bayes with Repeated k-fold Cross Validation ----
-loan_data_model_nb <-
-  e1071::naiveBayes(`loan_status` ~ loan_amnt + term + int_rate + grade + home_ownership + annual_inc +
-                      verification_status + dti + open_acc + revol_bal +
-                      total_acc + initial_list_status + total_pymnt + total_rec_int +
-                      tot_cur_bal, data = loan_data_train)
 
-### 3. Test the trained naive Bayes classifier using the testing dataset ----
-predictions_nb_e1071 <-
-  predict(loan_data_model_nb, loan_data_test[, 1:39])
-### 4.View a summary of the naive Bayes model----
-print(loan_data_model_nb)
+# ### 4.Display the model's evaluation metrics ----
+# confusion_matrix <-
+#   caret::confusionMatrix(predictions_lda,
+#                          loan_data_test[, 1:39]$loan_status)
+# print(confusion_matrix)
+# 
+# fourfoldplot(as.table(confusion_matrix), color = c("grey", "lightblue"),
+#              main = "Confusion Matrix")
+
+
+
+##Decision tree for a classification problem with caret ----
+###1.Train the model ----
+set.seed(7)
+# We apply the 5-fold cross validation resampling method
+train_control <- trainControl(method = "cv", number = 5)
+loan_model_rpart <- train(`loan_status` ~ loan_amnt + int_rate + grade + home_ownership + annual_inc +
+                                      verification_status + dti + open_acc + revol_bal +
+                                      total_acc + total_pymnt + total_rec_int +
+                                      tot_cur_bal, data = loan_data_train,
+                                    method = "rpart", metric = "Accuracy",
+                                    trControl = train_control)
+
+###2.Display the model's details ----
+print(loan_model_rpart)
+
+###3.Make predictions ----
+predictions <- predict(loan_model_rpart,
+                       loan_data_test[, 1:39])
+
+# ###4. Display the model's evaluation metrics ----
+# table(predictions, loan_data_test$loan_status)
+# 
+# confusion_matrix <-
+#   caret::confusionMatrix(predictions,
+#                          loan_data_test[, 1:39]$loan_status)
+# print(confusion_matrix)
+# 
+# fourfoldplot(as.table(confusion_matrix), color = c("grey", "lightblue"),
+#              main = "Confusion Matrix")
+
+
+##MODEL PERFORMANCE COMPARISON ----
+##Call the `resamples` Function ----
+# We then create a list of the model results and pass the list as an argument
+# to the `resamples` function.
+
+results <- resamples(list(LDA = loan_model_lda, CART = loan_model_rpart))
+
+##Display the Results ----
+### 1. Table Summary ----
+# This is the simplest comparison. It creates a table with one model per row
+# and its corresponding evaluation metrics displayed per column.
+
+summary(results)
+
+### 2. Box and Whisker Plot ----
+# This is useful for visually observing the spread of the estimated accuracies
+# for different algorithms and how they relate.
+
+scales <- list(x = list(relation = "free"), y = list(relation = "free"))
+bwplot(results, scales = scales)
+
+### 3. Dot Plots ----
+# They show both the mean estimated accuracy as well as the 95% confidence
+# interval (e.g. the range in which 95% of observed scores fell).
+
+scales <- list(x = list(relation = "free"), y = list(relation = "free"))
+dotplot(results, scales = scales)
+
+### 4. Scatter Plot Matrix ----
+# This is useful when considering whether the predictions from two
+# different algorithms are correlated. If weakly correlated, then they are good
+# candidates for being combined in an ensemble prediction.
+
+splom(results)
+
+### 5. Pairwise xyPlots ----
+# You can zoom in on one pairwise comparison of the accuracy of trial-folds for
+# two models using an xyplot.
+
+# xyplot plots to compare models
+xyplot(results, models = c("LDA", "CART"))
+
+# or
+# xyplot plots to compare models
+xyplot(results, models = c("LDA", "CART"))
+
+### 6. Statistical Significance Tests ----
+# This is used to calculate the significance of the differences between the
+# metric distributions of the various models.
+
+#### Upper Diagonal ----
+# The upper diagonal of the table shows the estimated difference between the
+# distributions. If we think that LDA is the most accurate model from looking
+# at the previous graphs, we can get an estimate of how much better it is than
+# specific other models in terms of absolute accuracy.
+
+#### Lower Diagonal ----
+# The lower diagonal contains p-values of the null hypothesis.
+# The null hypothesis is a claim that "the models are the same".
+# A lower p-value is better (more significant).
+
+diffs <- diff(results)
+
+summary(diffs)
+
+
+
+# STEP 7: Saving the Model----
+saveRDS(loan_model_rpart, "./models/saved_loan_model_rpart.rds")
+
+saveRDS(loan_model_lda, "./models/saved_loan_model_lda.rds")
+###Load the Model ----
+loaded_loan_model_rpart <- readRDS("./models/saved_loan_model_rpart.rds")
+print(loaded_loan_model_rpart)
+
+loaded_loan_model_lda <- readRDS("./models/saved_loan_model_lda.rds")
+print(loaded_loan_model_lda)
+###Make Predictions on New Data using the Saved Model ----
+to_be_predicted <-
+  data.frame(loan_amnt = 900000,int_rate = 13.69, grade = 'A' ,
+             home_ownership = 'OWN' , annual_inc = 50000, total_pymnt = 9000.0 , verification_status ="Verified" , 
+             dti = 8.24 ,open_acc = 13.0 , revol_bal =2932.0 , total_acc = 9.0 , total_rec_int = 525.11,
+             tot_cur_bal = 2932.0 )
+
+
+predict(loaded_loan_model_rpart, newdata = to_be_predicted)
+
+predict(loaded_loan_model_lda, newdata = to_be_predicted)
+
+
+#STEP 8: Run API ----
+
+api <- plumber::plumb("API.R")
+
+##Specify a constant localhost port to use ----
+api$run(host = "127.0.0.1", port = 5022)
+
+##Generate the URL required to access the API ----
+# We set this as a constant port 5022 running on localhost
+base_url <- "http://127.0.0.1:5022/loan"
+
+##Enclose everything in a function ----
+# All the 3 steps above can be enclosed in a function
+get_loan_predictions <-
+  function(arg_loan_amnt, arg_int_rate, arg_grade, arg_home_ownership, arg_annual_inc,
+           arg_total_pymnt,arg_verification_status, arg_dti, arg_open_acc, arg_revol_bal,
+           arg_total_acc,arg_total_rec_int, arg_tot_cur_bal) {
+    base_url <- "http://127.0.0.1:5022/loan"
+    
+    params <- list(arg_loan_amnt = arg_loan_amnt, arg_int_rate = arg_int_rate, 
+                   arg_grade = arg_grade, arg_home_ownership = arg_home_ownership, 
+                   arg_annual_inc = arg_annual_inc,arg_total_pymnt = arg_total_pymnt,
+                   arg_verification_status = arg_verification_status, arg_dti= arg_dti, 
+                   arg_open_acc = arg_open_acc, arg_revol_bal= arg_revol_bal,
+                   arg_total_acc = arg_total_acc,arg_total_rec_int = arg_total_rec_int, 
+                   arg_tot_cur_bal = arg_tot_cur_bal)
+    
+    query_url <- modify_url(url = base_url, query = params)
+    
+    model_prediction <- GET(query_url)
+    
+    model_prediction_raw <- content(model_prediction, as = "text",
+                                    encoding = "utf-8")
+    
+    jsonlite::fromJSON(model_prediction_raw)
+  }
 
