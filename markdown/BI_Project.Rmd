@@ -669,6 +669,8 @@ predict(loaded_loan_model_lda, newdata = to_be_predicted)
 
 # Step 9: API
 
+**LDA Model was used. The LDA Algorithm produced better results**
+
 ``` r
 #* @apiTitle Loan Classification Model API
 
