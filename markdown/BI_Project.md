@@ -1,27 +1,28 @@
-Business Intelligence Project
-================
+---
+---
+---
 
-- [Business Intelligence Project
-  Markdown](#business-intelligence-project-markdown)
-- [Student Details](#student-details)
-- [Step 1: Install and Load Packages](#step-1-install-and-load-packages)
-- [Step 2: Load the dataset](#step-2-load-the-dataset)
-- [Step 3: Data Imputation](#step-3-data-imputation)
-- [Step 4: Exploratory Data Analysis](#step-4-exploratory-data-analysis)
-- [Step 5: Data Transformation](#step-5-data-transformation)
-- [Step 6: Training the Model](#step-6-training-the-model)
-  - [Algorithm Selection](#algorithm-selection)
-  - [Model Performance Evaluation](#model-performance-evaluation)
-- [Step 7 HyperParameter Tuning and
-  Boosting](#step-7-hyperparameter-tuning-and-boosting)
-- [Step 8: Saving the models](#step-8-saving-the-models)
-- [Step 9: API](#step-9-api)
+# Business Intelligence Project
 
-# Business Intelligence Project Markdown
+-   [Business Intelligence Project Markdown](#business-intelligence-project-markdown)
+-   [Student Details](#student-details)
+-   [Step 1: Install and Load Packages](#step-1-install-and-load-packages)
+-   [Step 2: Load the dataset](#step-2-load-the-dataset)
+-   [Step 3: Data Imputation](#step-3-data-imputation)
+-   [Step 4: Exploratory Data Analysis](#step-4-exploratory-data-analysis)
+-   [Step 5: Data Transformation](#step-5-data-transformation)
+-   [Step 6: Training the Model](#step-6-training-the-model)
+    -   [Algorithm Selection](#algorithm-selection)
+    -   [Model Performance Evaluation](#model-performance-evaluation)
+-   [Step 7 HyperParameter Tuning and Boosting](#step-7-hyperparameter-tuning-and-boosting)
+-   [Step 8: Saving the models](#step-8-saving-the-models)
+-   [Step 9: API](#step-9-api)
+
+# Business Intelligence Project Markdown {#business-intelligence-project-markdown}
 
 \<25/11/23\>
 
-# Student Details
+# Student Details {#student-details}
 
 |                         |                                                              |     |
 |-------------------------|--------------------------------------------------------------|-----|
@@ -31,7 +32,7 @@ Business Intelligence Project
 | **Program**             | Bachelor of Business Information Technology                  |     |
 | **Semester Duration**   | 21<sup>st</sup> August 2023 to 28<sup>th</sup> November 2023 |     |
 
-# Step 1: Install and Load Packages
+# Step 1: Install and Load Packages {#step-1-install-and-load-packages}
 
 Installing all the required packages
 
@@ -250,7 +251,7 @@ if (require("jsonlite")) {
 }
 ```
 
-# Step 2: Load the dataset
+# Step 2: Load the dataset {#step-2-load-the-dataset}
 
 ``` r
 ##STEP 2: Load the dataset ----
@@ -261,7 +262,7 @@ loan_data_2015 <- read_csv("data/loan_data_2015.csv",
 View(loan_data_2015)
 ```
 
-# Step 3: Data Imputation
+# Step 3: Data Imputation {#step-3-data-imputation}
 
 ``` r
 ##STEP 3: Data Imputation ----
@@ -323,7 +324,7 @@ df <- loan_removed_vars_obs[, -c(10, 14, 16, 17, 19, 20, 23, 43)]
 loan_data <- df
 ```
 
-# Step 4: Exploratory Data Analysis
+# Step 4: Exploratory Data Analysis {#step-4-exploratory-data-analysis}
 
 ``` r
 ##STEP 4: Basic Exploratory Data Analysis ----
@@ -463,7 +464,7 @@ barplot(table(loan_data[, 13]), main = names(loan_data)[13])
 barplot(table(loan_data[, 14]), main = names(loan_data)[14])
 ```
 
-# Step 5: Data Transformation
+# Step 5: Data Transformation {#step-5-data-transformation}
 
 ``` r
 #STEP 5: Data Transformation ----
@@ -504,9 +505,9 @@ summary(loan_data_standardize_transform)
 sapply(loan_data_standardize_transform[, -1, -2, -6, -9, -10, -12, -13, -14, -23, -35 ], sd)
 ```
 
-# Step 6: Training the Model
+# Step 6: Training the Model {#step-6-training-the-model}
 
-## Algorithm Selection
+## Algorithm Selection {#algorithm-selection}
 
 ``` r
 ##ALGORITHM SELECTION ----
@@ -585,7 +586,7 @@ fourfoldplot(as.table(confusion_matrix), color = c("grey", "lightblue"),
              main = "Confusion Matrix")
 ```
 
-## Model Performance Evaluation
+## Model Performance Evaluation {#model-performance-evaluation}
 
 ``` r
 ##MODEL PERFORMANCE COMPARISON ----
@@ -641,13 +642,11 @@ diffs <- diff(results)
 summary(diffs)
 ```
 
-# Step 7 HyperParameter Tuning and Boosting
+# Step 7 HyperParameter Tuning and Boosting {#step-7-hyperparameter-tuning-and-boosting}
 
-**This particular step was omitted because the laptop encountered
-difficulties in executing the training process, likely attributed to the
-substantial size of the dataset.**
+**This particular step was omitted because the laptop encountered difficulties in executing the training process, likely attributed to the substantial size of the dataset.**
 
-# Step 8: Saving the models
+# Step 8: Saving the models {#step-8-saving-the-models}
 
 ``` r
 # STEP 7: Saving the Model----
@@ -673,7 +672,7 @@ predict(loaded_loan_model_rpart, newdata = to_be_predicted)
 predict(loaded_loan_model_lda, newdata = to_be_predicted)
 ```
 
-# Step 9: API
+# Step 9: API {#step-9-api}
 
 ``` r
 #* @apiTitle Loan Classification Model API

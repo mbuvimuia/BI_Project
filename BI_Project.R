@@ -409,7 +409,6 @@ barplot(table(loan_data[, 10]), main = names(loan_data)[10])
 barplot(table(loan_data[, 9]), main = names(loan_data)[9])
 barplot(table(loan_data[, 6]), main = names(loan_data)[6])
 barplot(table(loan_data[, 12]), main = names(loan_data)[12])
-barplot(table(loan_data[, 10]), main = names(loan_data)[10])
 barplot(table(loan_data[, 13]), main = names(loan_data)[13])
 barplot(table(loan_data[, 14]), main = names(loan_data)[14])
 
