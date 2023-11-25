@@ -244,13 +244,13 @@ miss_case_summary(loan_data_2015)
 # Which variables contain the most missing values?
 gg_miss_var(loan_data_2015)
 
-# ##Visualization of Missing Data----
-# if (!is.element("Amelia", installed.packages()[, 1])) {
-#   install.packages("Amelia", dependencies = TRUE)
-# }
-# require("Amelia")
-# 
-# missmap(loan_data_2015, col = c("red", "grey"), legend = TRUE)
+##Visualization of Missing Data----
+if (!is.element("Amelia", installed.packages()[, 1])) {
+  install.packages("Amelia", dependencies = TRUE)
+}
+require("Amelia")
+
+missmap(loan_data_2015, col = c("red", "grey"), legend = TRUE)
 
 ##Remove Missing Data: Option 2
 loan_dataset_removed_vars <-
@@ -487,14 +487,6 @@ print(loan_model_lda)
 
 
 
-# ### 4.Display the model's evaluation metrics ----
-# confusion_matrix <-
-#   caret::confusionMatrix(predictions_lda,
-#                          loan_data_test[, 1:39]$loan_status)
-# print(confusion_matrix)
-# 
-# fourfoldplot(as.table(confusion_matrix), color = c("grey", "lightblue"),
-#              main = "Confusion Matrix")
 
 
 
@@ -516,17 +508,6 @@ print(loan_model_rpart)
 ###3.Make predictions ----
 predictions <- predict(loan_model_rpart,
                        loan_data_test[, 1:39])
-
-# ###4. Display the model's evaluation metrics ----
-# table(predictions, loan_data_test$loan_status)
-# 
-# confusion_matrix <-
-#   caret::confusionMatrix(predictions,
-#                          loan_data_test[, 1:39]$loan_status)
-# print(confusion_matrix)
-# 
-# fourfoldplot(as.table(confusion_matrix), color = c("grey", "lightblue"),
-#              main = "Confusion Matrix")
 
 
 ##MODEL PERFORMANCE COMPARISON ----
@@ -619,40 +600,10 @@ predict(loaded_loan_model_rpart, newdata = to_be_predicted)
 predict(loaded_loan_model_lda, newdata = to_be_predicted)
 
 
-#STEP 8: Run API ----
+#STEP 8: API ----
 
 api <- plumber::plumb("API.R")
 
 ##Specify a constant localhost port to use ----
 api$run(host = "127.0.0.1", port = 5022)
-
-##Generate the URL required to access the API ----
-# We set this as a constant port 5022 running on localhost
-base_url <- "http://127.0.0.1:5022/loan"
-
-##Enclose everything in a function ----
-# All the 3 steps above can be enclosed in a function
-get_loan_predictions <-
-  function(arg_loan_amnt, arg_int_rate, arg_grade, arg_home_ownership, arg_annual_inc,
-           arg_total_pymnt,arg_verification_status, arg_dti, arg_open_acc, arg_revol_bal,
-           arg_total_acc,arg_total_rec_int, arg_tot_cur_bal) {
-    base_url <- "http://127.0.0.1:5022/loan"
-    
-    params <- list(arg_loan_amnt = arg_loan_amnt, arg_int_rate = arg_int_rate, 
-                   arg_grade = arg_grade, arg_home_ownership = arg_home_ownership, 
-                   arg_annual_inc = arg_annual_inc,arg_total_pymnt = arg_total_pymnt,
-                   arg_verification_status = arg_verification_status, arg_dti= arg_dti, 
-                   arg_open_acc = arg_open_acc, arg_revol_bal= arg_revol_bal,
-                   arg_total_acc = arg_total_acc,arg_total_rec_int = arg_total_rec_int, 
-                   arg_tot_cur_bal = arg_tot_cur_bal)
-    
-    query_url <- modify_url(url = base_url, query = params)
-    
-    model_prediction <- GET(query_url)
-    
-    model_prediction_raw <- content(model_prediction, as = "text",
-                                    encoding = "utf-8")
-    
-    jsonlite::fromJSON(model_prediction_raw)
-  }
 

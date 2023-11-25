@@ -14,6 +14,22 @@ if (require("plumber")) {
   install.packages("plumber", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
 }
+##httr ----
+
+if (require("httr")) {
+  require("httr")
+} else {
+  install.packages("httr", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
+
+## jsonlite ----
+if (require("jsonlite")) {
+  require("jsonlite")
+} else {
+  install.packages("jsonlite", dependencies = TRUE,
+                   repos = "https://cloud.r-project.org")
+}
   
 #* @apiTitle Loan Classification Model API
 
@@ -58,3 +74,7 @@ predict_diabetes <-
     # Make a prediction based on the data frame
     predict(loaded_loan_model_lda, to_be_predicted)
   }
+
+
+
+
