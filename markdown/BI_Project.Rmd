@@ -242,7 +242,6 @@ if (require("jsonlite")) {
   install.packages("jsonlite", dependencies = TRUE,
                    repos = "https://cloud.r-project.org")
 }
-
 ```
 
 # Step 2: Load the dataset
@@ -499,7 +498,7 @@ summary(loan_data_standardize_transform)
 sapply(loan_data_standardize_transform[, -1, -2, -6, -9, -10, -12, -13, -14, -23, -35 ], sd)
 ```
 
-# Step 6: Training the Model 
+# Step 6: Training the Model
 
 ## Algorithm Selection
 
@@ -578,7 +577,6 @@ print(confusion_matrix)
 
 fourfoldplot(as.table(confusion_matrix), color = c("grey", "lightblue"),
              main = "Confusion Matrix")
-
 ```
 
 ## Model Performance Evaluation
@@ -637,7 +635,7 @@ diffs <- diff(results)
 summary(diffs)
 ```
 
-# Step 7 HyperParameter Tuning and Boosting 
+# Step 7 HyperParameter Tuning and Boosting
 
 **This particular step was omitted because the laptop encountered difficulties in executing the training process, likely attributed to the substantial size of the dataset.**
 
